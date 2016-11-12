@@ -5,7 +5,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories("Utility/include"
                     "Utility/include/GL"
-                    "Utility/include/VM")
+                    "Utility/include/VM"
+                    "include")
 
 set(SOURCE_FILES
     "Simple OpenGL Image Library/src/image_DXT.c"
@@ -22,7 +23,7 @@ set(SOURCE_FILES
     Utility/src/vec2.cpp
     Utility/src/vec3.cpp
     Utility/src/vec4.cpp
-        src/main.cpp)
+        src/main.cpp src/grass.cpp include/grass.h include/ground.h src/ground.cpp)
 
 
 
