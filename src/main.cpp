@@ -4,6 +4,7 @@
 
 #include "Utility.h"
 #include "grass.h"
+#include "ground.h"
 
 
 
@@ -15,9 +16,8 @@ GL::Camera camera;               // Мы предоставляем Вам ре�
                                  // Вы можете просто пользоваться этим классом для расчёта указанных матриц.
 
 Grass grass(camera);
+Ground ground(camera);
 
-GLuint groundShader; // Шейдер для земли
-GLuint groundVAO; // VAO для земли
 
 // Размеры экрана
 uint screenWidth = 800;
@@ -25,31 +25,6 @@ uint screenHeight = 600;
 
 // Это для захвата мышки. Вам это не потребуется (это не значит, что нужно удалять эту строку)
 bool captureMouse = true;
-
-// Функция, рисующая замлю
-void DrawGround() {
-    // Используем шейдер для земли
-    glUseProgram(groundShader);                                                  CHECK_GL_ERRORS
-
-    // Устанавливаем юниформ для шейдера. В данном случае передадим перспективную матрицу камеры
-    // Находим локацию юниформа 'camera' в шейдере
-    GLint cameraLocation = glGetUniformLocation(groundShader, "camera");         CHECK_GL_ERRORS
-    // Устанавливаем юниформ (загружаем на GPU матрицу проекции?)                                                     // ###
-    glUniformMatrix4fv(cameraLocation, 1, GL_TRUE, camera.getMatrix().data().data()); CHECK_GL_ERRORS
-
-    // Подключаем VAO, который содержит буферы, необходимые для отрисовки земли
-    glBindVertexArray(groundVAO);                                                CHECK_GL_ERRORS
-
-    // Рисуем землю: 2 треугольника (6 вершин)
-    glDrawArrays(GL_TRIANGLES, 0, 6);                                            CHECK_GL_ERRORS
-
-    // Отсоединяем VAO
-    glBindVertexArray(0);                                                        CHECK_GL_ERRORS
-    // Отключаем шейдер
-    glUseProgram(0);                                                             CHECK_GL_ERRORS
-}
-
-
 
 
 // Эта функция вызывается для обновления экрана
@@ -59,7 +34,7 @@ void RenderLayouts() {
     // Очистка буфера глубины и цветового буфера
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Рисуем меши
-    DrawGround();
+    ground.DrawGround();
     grass.DrawGrass();
     glutSwapBuffers();
 }
@@ -165,37 +140,6 @@ void CreateCamera() {
     camera.znear = 0.05f;
 }
 
-// Создаём замлю
-void CreateGround() {
-    // Земля состоит из двух треугольников
-    vector<VM::vec4> meshPoints = {
-        VM::vec4(0, 0, 0, 1),
-        VM::vec4(1, 0, 0, 1),
-        VM::vec4(1, 0, 1, 1),
-        VM::vec4(0, 0, 0, 1),
-        VM::vec4(1, 0, 1, 1),
-        VM::vec4(0, 0, 1, 1),
-    };
-
-    // Подробнее о том, как это работает читайте в функции CreateGrass
-
-    groundShader = GL::CompileShaderProgram("ground");
-
-    GLuint pointsBuffer;
-    glGenBuffers(1, &pointsBuffer);                                              CHECK_GL_ERRORS
-    glBindBuffer(GL_ARRAY_BUFFER, pointsBuffer);                                 CHECK_GL_ERRORS
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * meshPoints.size(), meshPoints.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
-
-    glGenVertexArrays(1, &groundVAO);                                            CHECK_GL_ERRORS
-    glBindVertexArray(groundVAO);                                                CHECK_GL_ERRORS
-
-    GLuint index = glGetAttribLocation(groundShader, "point");                   CHECK_GL_ERRORS
-    glEnableVertexAttribArray(index);                                            CHECK_GL_ERRORS
-    glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);                   CHECK_GL_ERRORS
-
-    glBindVertexArray(0);                                                        CHECK_GL_ERRORS
-    glBindBuffer(GL_ARRAY_BUFFER, 0);                                            CHECK_GL_ERRORS
-}
 
 int main(int argc, char **argv)
 {
@@ -208,7 +152,7 @@ int main(int argc, char **argv)
         cout << "glew inited" << endl;
         CreateCamera();
         cout << "Grass created" << endl;
-        CreateGround();
+        ground.CreateGround();
         cout << "Camera created" << endl;
         grass.CreateGrass();
         cout << "Ground created" << endl;
