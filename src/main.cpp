@@ -34,8 +34,8 @@ void RenderLayouts() {
     // Очистка буфера глубины и цветового буфера
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Рисуем меши
-    ground.DrawGround();
-    grass.DrawGrass();
+    ground.Draw();
+    grass.Draw();
     glutSwapBuffers();
 }
 
@@ -152,9 +152,9 @@ int main(int argc, char **argv)
         cout << "glew inited" << endl;
         CreateCamera();
         cout << "Grass created" << endl;
-        ground.CreateGround();
+        ground.Create();
         cout << "Camera created" << endl;
-        grass.CreateGrass();
+        grass.Create();
         cout << "Ground created" << endl;
         glutMainLoop();
     } catch (string s) {

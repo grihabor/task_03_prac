@@ -8,7 +8,7 @@ Ground::Ground(GL::Camera &camera_ref)
 {}
 
 // Функция, рисующая замлю
-void Ground::DrawGround() {
+void Ground::Draw() {
     // Используем шейдер для земли
     glUseProgram(groundShader);                                                  CHECK_GL_ERRORS
 
@@ -16,7 +16,8 @@ void Ground::DrawGround() {
     // Находим локацию юниформа 'camera' в шейдере
     GLint cameraLocation = glGetUniformLocation(groundShader, "camera");         CHECK_GL_ERRORS
     // Устанавливаем юниформ (загружаем на GPU матрицу проекции?)                                                     // ###
-    glUniformMatrix4fv(cameraLocation, 1, GL_TRUE, camera.getMatrix().data().data()); CHECK_GL_ERRORS
+    glUniformMatrix4fv(cameraLocation, 1, GL_TRUE,
+                       camera.getMatrix().data().data());                        CHECK_GL_ERRORS
 
     // Подключаем VAO, который содержит буферы, необходимые для отрисовки земли
     glBindVertexArray(groundVAO);                                                CHECK_GL_ERRORS
@@ -32,25 +33,27 @@ void Ground::DrawGround() {
 
 
 // Создаём замлю
-void Ground::CreateGround() {
+void Ground::Create() {
     // Земля состоит из двух треугольников
     vector<VM::vec4> meshPoints = {
             VM::vec4(0, 0, 0, 1),
             VM::vec4(1, 0, 0, 1),
             VM::vec4(1, 0, 1, 1),
+
             VM::vec4(0, 0, 0, 1),
             VM::vec4(1, 0, 1, 1),
             VM::vec4(0, 0, 1, 1),
     };
 
-    // Подробнее о том, как это работает читайте в функции CreateGrass
+    // Подробнее о том, как это работает читайте в функции Create
 
     groundShader = GL::CompileShaderProgram("ground");
 
     GLuint pointsBuffer;
     glGenBuffers(1, &pointsBuffer);                                              CHECK_GL_ERRORS
     glBindBuffer(GL_ARRAY_BUFFER, pointsBuffer);                                 CHECK_GL_ERRORS
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * meshPoints.size(), meshPoints.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * meshPoints.size(),
+                 meshPoints.data(), GL_STATIC_DRAW);                             CHECK_GL_ERRORS
 
     glGenVertexArrays(1, &groundVAO);                                            CHECK_GL_ERRORS
     glBindVertexArray(groundVAO);                                                CHECK_GL_ERRORS

@@ -12,8 +12,8 @@ private:
 
 public:
     Ground(GL::Camera &camera_ref);
-    void DrawGround();
-    void CreateGround();
+    void Draw();
+    void Create();
 };
 
 #endif //TASK_03_GROUND_H

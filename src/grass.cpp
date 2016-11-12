@@ -24,7 +24,7 @@ void Grass::UpdateGrassVariance() {
 }
 
 // Рисование травы
-void Grass::DrawGrass() {
+void Grass::Draw() {
     // Тут то же самое, что и в рисовании земли
     glUseProgram(grassShader);                                                   CHECK_GL_ERRORS
     GLint cameraLocation = glGetUniformLocation(grassShader, "camera");          CHECK_GL_ERRORS
@@ -69,7 +69,7 @@ vector<VM::vec4> GenMesh(uint n) {
 }
 
 // Создание травы
-void Grass::CreateGrass() {
+void Grass::Create() {
     uint LOD = 1;
     // Создаём меш
     vector<VM::vec4> grassPoints = GenMesh(LOD);
@@ -97,7 +97,8 @@ void Grass::CreateGrass() {
     // Привязываем сгенерированный буфер
     glBindBuffer(GL_ARRAY_BUFFER, pointsBuffer);                                 CHECK_GL_ERRORS
     // Заполняем буфер данными из вектора
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * grassPoints.size(), grassPoints.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * grassPoints.size(),
+                 grassPoints.data(), GL_STATIC_DRAW);                            CHECK_GL_ERRORS
 
     // Создание VAO
     // Генерация VAO
@@ -117,7 +118,8 @@ void Grass::CreateGrass() {
     glGenBuffers(1, &positionBuffer);                                            CHECK_GL_ERRORS
     // Здесь мы привязываем новый буфер, так что дальше вся работа будет с ним до следующего вызова glBindBuffer
     glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);                               CHECK_GL_ERRORS
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec2) * grassPositions.size(), grassPositions.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec2) * grassPositions.size(),
+                 grassPositions.data(), GL_STATIC_DRAW);                         CHECK_GL_ERRORS
 
     GLuint positionLocation = glGetAttribLocation(grassShader, "position");      CHECK_GL_ERRORS
     glEnableVertexAttribArray(positionLocation);                                 CHECK_GL_ERRORS
@@ -126,9 +128,10 @@ void Grass::CreateGrass() {
     glVertexAttribDivisor(positionLocation, 1);                                  CHECK_GL_ERRORS
 
     // Создаём буфер для смещения травинок
-    glGenBuffers(1, &grassVariance);                                            CHECK_GL_ERRORS
-    glBindBuffer(GL_ARRAY_BUFFER, grassVariance);                               CHECK_GL_ERRORS
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * GRASS_INSTANCES, grassVarianceData.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
+    glGenBuffers(1, &grassVariance);                                             CHECK_GL_ERRORS
+    glBindBuffer(GL_ARRAY_BUFFER, grassVariance);                                CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * GRASS_INSTANCES,
+                 grassVarianceData.data(), GL_STATIC_DRAW);                      CHECK_GL_ERRORS
 
     GLuint varianceLocation = glGetAttribLocation(grassShader, "variance");      CHECK_GL_ERRORS
     glEnableVertexAttribArray(varianceLocation);                                 CHECK_GL_ERRORS

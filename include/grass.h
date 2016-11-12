@@ -21,10 +21,9 @@ private:
 public:
     Grass(GL::Camera& camera_ref);
     void UpdateGrassVariance();
-    void DrawGrass();
+    void Draw();
     vector<VM::vec2> GenerateGrassPositions();
-    void CreateGrass();
-
+    void Create();
 };
 
 #endif //TASK_03_GRASS_H
