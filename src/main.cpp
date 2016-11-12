@@ -2,8 +2,8 @@
 #include <vector>
 #include <stdlib.h>
 
-
 #include "Utility.h"
+
 
 using namespace std;
 
@@ -92,8 +92,8 @@ void RenderLayouts() {
     // Очистка буфера глубины и цветового буфера
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Рисуем меши
-    DrawGrass();
     DrawGround();
+    DrawGrass();
     glutSwapBuffers();
 }
 
@@ -199,7 +199,15 @@ vector<VM::vec4> GenMesh(uint n) {
     return {
         VM::vec4(0, 0, 0, 1),
         VM::vec4(1, 0, 0, 1),
-        VM::vec4(0.5, 1, 0, 1),
+        VM::vec4(1, .5, 0, 1),
+
+        VM::vec4(0, 0, 0, 1),
+        VM::vec4(1, .5, 0, 1),
+        VM::vec4(0, .5, 0, 1),
+
+        VM::vec4(0, .5, 0, 1),
+        VM::vec4(1, .5, 0, 1),
+        VM::vec4(.5, 1, 0, 1),
     };
 }
 
@@ -329,10 +337,10 @@ int main(int argc, char **argv)
         glewInit();
         cout << "glew inited" << endl;
         CreateCamera();
-        cout << "Camera created" << endl;
-        CreateGrass();
         cout << "Grass created" << endl;
         CreateGround();
+        cout << "Camera created" << endl;
+        CreateGrass();
         cout << "Ground created" << endl;
         glutMainLoop();
     } catch (string s) {

@@ -22,7 +22,7 @@ set(SOURCE_FILES
     Utility/src/vec2.cpp
     Utility/src/vec3.cpp
     Utility/src/vec4.cpp
-    main.cpp)
+        src/main.cpp)
 
 
 
