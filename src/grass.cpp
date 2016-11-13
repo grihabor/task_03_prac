@@ -38,15 +38,30 @@ void Grass::Draw() {
     glUseProgram(0);                                                             CHECK_GL_ERRORS
 }
 
+double Crop(double a)
+{
+    if(a < 0.)
+        return 0.;
+    if(a > 1.)
+        return 1.;
+    return a;
+}
 
 // Генерация позиций травинок (эту функцию вам придётся переписать)
 vector<VM::vec2> Grass::GenerateGrassPositions() {
     vector<VM::vec2> grassPositions(GRASS_INSTANCES);
     double width = sqrt(GRASS_INSTANCES);
+    double k = 1;
+
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        uint x = i % int(width);
-        uint y = i / int(width);
-        grassPositions[i] = VM::vec2(x / width, y / width) + VM::vec2(1, 1) / 8;
+        double x = i % int(width);
+        double y = i / int(width);
+        x += k * (float(rand()) / RAND_MAX);
+        y += k * (float(rand()) / RAND_MAX);
+        x = Crop(x/width);
+        y = Crop(y/width);
+
+        grassPositions[i] = VM::vec2(x, y);
     }
     return grassPositions;
 }

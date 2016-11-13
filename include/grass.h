@@ -6,7 +6,7 @@
 
 using std::vector;
 
-const uint GRASS_INSTANCES = 64; // Количество травинок
+const uint GRASS_INSTANCES = 32*32; // Количество травинок
 
 class Grass
 {
