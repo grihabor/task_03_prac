@@ -4,6 +4,7 @@ in vec4 point;
 in vec2 position;
 in vec4 variance;
 
+
 uniform mat4 camera;
 
 void main() {

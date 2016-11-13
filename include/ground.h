@@ -9,7 +9,7 @@ private:
     GL::Camera &camera;
     GLuint groundShader; // Шейдер для земли
     GLuint groundVAO; // VAO для земли
-
+    GLuint texture;
 public:
     Ground(GL::Camera &camera_ref);
     void Draw();

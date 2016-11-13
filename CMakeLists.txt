@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include_directories("Utility/include"
                     "Utility/include/GL"
                     "Utility/include/VM"
+                    "Simple OpenGL Image Library/src"
                     "include")
 
 set(SOURCE_FILES
@@ -23,12 +24,19 @@ set(SOURCE_FILES
     Utility/src/vec2.cpp
     Utility/src/vec3.cpp
     Utility/src/vec4.cpp
-        src/main.cpp src/grass.cpp include/grass.h include/ground.h src/ground.cpp)
+        src/main.cpp
+        src/grass.cpp
+        src/ground.cpp)
 
 
 
 add_executable(task_03 ${SOURCE_FILES})
 target_link_libraries(task_03 libGL.so libglut.so libGLEW.so libGLU.so)
 
+add_custom_target(textures ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Texture $<TARGET_FILE_DIR:task_03>/Texture)
+
 add_custom_target(shaders ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/shaders $<TARGET_FILE_DIR:task_03>/shaders)
+
+add_custom_target(program DEPENDS shaders textures)
