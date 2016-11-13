@@ -40,8 +40,8 @@ void Ground::Draw() {
     glUseProgram(0);                                                             CHECK_GL_ERRORS
 }
 
-#define U(x) (x)
-#define V(x) (1.0f - (x))
+#define U(x) (1.f - x)
+#define V(x) (1.f - x)
 
 GLuint LoadTexture(const char *filename)
 {
@@ -75,9 +75,9 @@ GLuint LoadTexture(const char *filename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);CHECK_GL_ERRORS
 
-    return texture;
     // free image data
-    //stbi_image_free(textureData);
+    stbi_image_free(textureData);
+    return texture;
 }
 
 // Создаём замлю
