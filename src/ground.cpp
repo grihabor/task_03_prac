@@ -26,7 +26,7 @@ void Ground::Draw() {
     glBindVertexArray(groundVAO);                                               CHECK_GL_ERRORS
 
 
-    glBindTexture(GL_TEXTURE_2D, texture);                                      CHECK_GL_ERRORS
+    glBindTexture(GL_TEXTURE_2D, texture.id);                                   CHECK_GL_ERRORS
 
     // Рисуем землю: 2 треугольника (6 вершин)
     glDrawArrays(GL_TRIANGLES, 0, 6);                                           CHECK_GL_ERRORS
@@ -63,6 +63,7 @@ void Ground::Create() {
             VM::vec4(0, 0, 1, 1)
     };
 
+
     groundShader = GL::CompileShaderProgram("ground");
 
     // VAO
@@ -78,7 +79,7 @@ void Ground::Create() {
     GLuint uvVBO = vboArray[1];
 
 
-    texture = GL::LoadTexture("Texture/ground.jpg", GL_REPEAT);
+    texture = GL::LoadTexture("Texture/ground.jpg", GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR);
     //GL::bindTexture(groundShader, "textureSampler", texture);
 
     GLuint pointLocation = glGetAttribLocation(groundShader, "point");          CHECK_GL_ERRORS

@@ -2,6 +2,7 @@
 #define TASK_03_GROUND_H
 
 #include "Utility.h"
+#include "Texture.h"
 
 class Ground
 {
@@ -9,7 +10,7 @@ private:
     GL::Camera &camera;
     GLuint groundShader; // Шейдер для земли
     GLuint groundVAO; // VAO для земли
-    GLuint texture;
+    GL::Texture texture;
 
 public:
     Ground(GL::Camera &camera_ref);

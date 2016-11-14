@@ -19,7 +19,8 @@ void Grass::UpdateGrassVariance() {
     // Привязываем буфер, содержащий смещения
     glBindBuffer(GL_ARRAY_BUFFER, grassVariance);                                CHECK_GL_ERRORS
     // Загружаем данные в видеопамять
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * GRASS_INSTANCES, grassVarianceData.data(), GL_STATIC_DRAW); CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * GRASS_INSTANCES,
+                 grassVarianceData.data(), GL_STATIC_DRAW);                      CHECK_GL_ERRORS
     // Отвязываем буфер
     glBindBuffer(GL_ARRAY_BUFFER, 0);                                            CHECK_GL_ERRORS
 }
@@ -27,19 +28,39 @@ void Grass::UpdateGrassVariance() {
 // Рисование травы
 void Grass::Draw() {
     // Тут то же самое, что и в рисовании земли
-    glUseProgram(grassShader);                                                   CHECK_GL_ERRORS
-    GLint cameraLocation = glGetUniformLocation(grassShader, "camera");          CHECK_GL_ERRORS
-    glUniformMatrix4fv(cameraLocation, 1, GL_TRUE, camera.getMatrix().data().data()); CHECK_GL_ERRORS
+    glUseProgram(grassShader);                                                  CHECK_GL_ERRORS
+    GLint cameraLocation = glGetUniformLocation(grassShader, "camera");         CHECK_GL_ERRORS
+    glUniformMatrix4fv(cameraLocation, 1, GL_TRUE,
+                       camera.getMatrix().data().data());                       CHECK_GL_ERRORS
 
-    glBindVertexArray(grassVAO);                                                 CHECK_GL_ERRORS
-    glBindTexture(GL_TEXTURE_2D, texture);                                      CHECK_GL_ERRORS
+    glBindVertexArray(grassVAO);                                                CHECK_GL_ERRORS
+    glBindTexture(GL_TEXTURE_2D, texture.id);                                   CHECK_GL_ERRORS
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);                         CHECK_GL_ERRORS
 
     // Обновляем смещения для травы
     UpdateGrassVariance();
     // Отрисовка травинок в количестве GRASS_INSTANCES
-    glDrawArraysInstanced(GL_TRIANGLES, 0, grassPointsCount, GRASS_INSTANCES);   CHECK_GL_ERRORS
-    glBindVertexArray(0);                                                        CHECK_GL_ERRORS
-    glUseProgram(0);                                                             CHECK_GL_ERRORS
+    //glDrawArraysInstanced(GL_TRIANGLES, 0, grassPointsCount, GRASS_INSTANCES);   CHECK_GL_ERRORS
+
+    glDrawElementsInstanced(
+        GL_TRIANGLES,
+        nIndices*3,
+        GL_UNSIGNED_BYTE,
+        (void*)0,
+        GRASS_INSTANCES
+    );                                                                          CHECK_GL_ERRORS
+
+    glDrawElements(
+            GL_TRIANGLES,      // mode
+            nIndices,    // count
+            GL_UNSIGNED_BYTE,   // type
+            (void*)0           // element array buffer offset
+    );                                                                          CHECK_GL_ERRORS
+
+
+
+    glBindVertexArray(0);                                                       CHECK_GL_ERRORS
+    glUseProgram(0);                                                            CHECK_GL_ERRORS
 }
 
 double Crop(double a)
@@ -50,6 +71,8 @@ double Crop(double a)
         return 1.;
     return a;
 }
+
+#include <algorithm>
 
 vector<VM::vec2> Grass::GenerateGrassPositions() {
     vector<VM::vec2> grassPositions(GRASS_INSTANCES);
@@ -66,6 +89,10 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
 
         grassPositions[i] = VM::vec2(x, y);
     }
+
+    std::sort(grassPositions.begin(), grassPositions.end(),
+              [](const VM::vec2 &v1, const VM::vec2 &v2){return v1.y > v2.y;});
+
     return grassPositions;
 }
 
@@ -99,8 +126,8 @@ vector<VM::vec2> GenUV(const vector<VM::vec4> &mesh)
 void Grass::Create() {
     uint LOD = 1;
     // Создаём меш
-    vector<VM::vec4> grassPoints = GenMesh(LOD);
-    vector<VM::vec2> uvPoints = GenUV(grassPoints);
+    vector<VM::vec4> grassPoints;// = GenMesh(LOD);
+    vector<VM::vec2> uvPoints;// = GenUV(grassPoints);
 
     // Сохраняем количество вершин в меше травы
     grassPointsCount = grassPoints.size();
@@ -118,18 +145,26 @@ void Grass::Create() {
     glBindVertexArray(grassVAO);                                                 CHECK_GL_ERRORS
 
     // VBO
-    GLuint buffers[4];
+    GLuint buffers[5];
     int bufCount = sizeof(buffers)/sizeof(buffers[0]);
     glGenBuffers(bufCount, buffers);                                              CHECK_GL_ERRORS
 
     GLuint pointsBuffer = buffers[0];
     GLuint positionBuffer = buffers[1];
     grassVariance = buffers[2];
-    GLuint uvVBO = buffers[3];
+    GLuint uvBuffer = buffers[3];
+    indexBuffer = buffers[4];
 
 
+    texture = GL::LoadTexture(FILENAME_TEXTURE_GRASS, GL_CLAMP_TO_BORDER, GL_LINEAR);
+    vector<unsigned char> faces;
+    nIndices = GL::LoadCoords("Texture/grass.uv", texture, grassPoints, uvPoints, faces);
+    std::cout << "nIndices = " << nIndices << std::endl;
+    vector<unsigned char> indices;
+    for(int i = 1; i <= nIndices; ++i){
+        indices.push_back(i);
+    }
 
-    texture = GL::LoadTexture(FILENAME_TEXTURE_GRASS, GL_CLAMP_TO_BORDER);
 
 
     GLuint pointsLocation = glGetAttribLocation(grassShader, "point");           CHECK_GL_ERRORS
@@ -137,6 +172,14 @@ void Grass::Create() {
     GLuint varianceLocation = glGetAttribLocation(grassShader, "variance");      CHECK_GL_ERRORS
     GLuint uvpointLocation = glGetAttribLocation(grassShader, "uvpoint");        CHECK_GL_ERRORS
 
+
+
+    vector<unsigned char> t = {0, 1, 6};
+
+    // indices
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);                        CHECK_GL_ERRORS
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof(faces[0]),
+                 faces.data(), GL_STATIC_DRAW);     CHECK_GL_ERRORS
 
     // mesh points
     glBindBuffer(GL_ARRAY_BUFFER, pointsBuffer);                                 CHECK_GL_ERRORS
@@ -171,7 +214,7 @@ void Grass::Create() {
 
 
     // uv points
-    glBindBuffer(GL_ARRAY_BUFFER, uvVBO);                                       CHECK_GL_ERRORS
+    glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);                                       CHECK_GL_ERRORS
     glBufferData(GL_ARRAY_BUFFER, sizeof(uvPoints[0]) * uvPoints.size(),
                  uvPoints.data(), GL_STATIC_DRAW);                              CHECK_GL_ERRORS
 
