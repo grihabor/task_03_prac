@@ -12,6 +12,7 @@ namespace GL {
 
 void bindTexture(GLuint program, const std::string& name, GLuint texture, GLint unit=0);
 
+    GLuint LoadTexture(const char *filename, GLuint mode);
 }
 
 #endif // GL_TEXTURE_H
