@@ -24,8 +24,6 @@ void Ground::Draw() {
 
     // Подключаем VAO, который содержит буферы, необходимые для отрисовки земли
     glBindVertexArray(groundVAO);                                               CHECK_GL_ERRORS
-
-
     glBindTexture(GL_TEXTURE_2D, texture.id);                                   CHECK_GL_ERRORS
 
     // Рисуем землю: 2 треугольника (6 вершин)

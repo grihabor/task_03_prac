@@ -11,8 +11,8 @@ out vec2 UV;
 
 void main() {
     mat4 scaleMatrix = mat4(1.0);
-    scaleMatrix[0][0] = 0.1;
-    scaleMatrix[1][1] = 0.1;
+    scaleMatrix[0][0] = 0.03;
+    scaleMatrix[1][1] = 0.03;
     mat4 positionMatrix = mat4(1.0);
     positionMatrix[3][0] = position.x;
     positionMatrix[3][2] = position.y;

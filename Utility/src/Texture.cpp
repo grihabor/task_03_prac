@@ -62,6 +62,9 @@ namespace GL {
         ifstream file(filename);
         string s;
         int maxIndex = 0;
+
+        float ratio = t.width / float(t.height);
+
         while(file >> s){
             if(s == "v"){
                 string x, y;
@@ -82,7 +85,7 @@ namespace GL {
                 }
 
                 uvcoords.push_back(VM::vec2(coord.x, coord.y));
-                coords.push_back(VM::vec4(1.f - coord.x, 1.f - coord.y, 0.f, 1.f));
+                coords.push_back(VM::vec4(ratio*(1.f - coord.x), 1.f - coord.y, 0.f, 1.f));
             } else if(s == "f") {
                 unsigned char index;
                 for(int i = 0; i < 3; ++i){
