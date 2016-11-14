@@ -1,5 +1,7 @@
 #include "Texture.h"
-#include <stb_image_aug.h>
+#include <SOIL.h>
+#include <VM/vec2.h>
+#include <vector>
 
 using namespace std;
 
@@ -24,7 +26,7 @@ void bindTexture(GLuint program, const string& name, GLuint texture, GLint unit)
         int width, height, n;
 
         // load texture
-        unsigned char *textureData = stbi_jpeg_load(filename, &width,
+        unsigned char *textureData = SOIL_load_image(filename, &width,
                                                     &height, &n, 4);
         if(!textureData){
             cout << "stbi_load failed: " << filename << endl;
@@ -50,9 +52,12 @@ void bindTexture(GLuint program, const string& name, GLuint texture, GLint unit)
                         GL_LINEAR_MIPMAP_LINEAR);                                   CHECK_GL_ERRORS
         */
         // free image data
-        stbi_image_free(textureData);
+        SOIL_free_image_data(textureData);
         return texture;
     }
 
+    void LoadCoords(const char *filename, vector<VM::vec2>& uv, vector<int>& indices)
+    {
 
+    }
 }

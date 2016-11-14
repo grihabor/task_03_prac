@@ -1,3 +1,4 @@
+#include <GL/Texture.h>
 #include "grass.h"
 
 
@@ -29,7 +30,10 @@ void Grass::Draw() {
     glUseProgram(grassShader);                                                   CHECK_GL_ERRORS
     GLint cameraLocation = glGetUniformLocation(grassShader, "camera");          CHECK_GL_ERRORS
     glUniformMatrix4fv(cameraLocation, 1, GL_TRUE, camera.getMatrix().data().data()); CHECK_GL_ERRORS
+
     glBindVertexArray(grassVAO);                                                 CHECK_GL_ERRORS
+    glBindTexture(GL_TEXTURE_2D, texture);                                      CHECK_GL_ERRORS
+
     // Обновляем смещения для травы
     UpdateGrassVariance();
     // Отрисовка травинок в количестве GRASS_INSTANCES
@@ -70,15 +74,15 @@ vector<VM::vec4> GenMesh(uint n) {
     return {
             VM::vec4(0, 0, 0, 1),
             VM::vec4(1, 0, 0, 1),
-            VM::vec4(1, .5, 0, 1),
-
-            VM::vec4(0, 0, 0, 1),
-            VM::vec4(1, .5, 0, 1),
             VM::vec4(0, .5, 0, 1),
 
             VM::vec4(0, .5, 0, 1),
-            VM::vec4(1, .5, 0, 1),
+            VM::vec4(1, 0, 0, 1),
+            VM::vec4(0, 1, 0, 1),
+
+            VM::vec4(1, 0, 0, 1),
             VM::vec4(.5, 1, 0, 1),
+            VM::vec4(0, 1, 0, 1),
     };
 }
 
@@ -86,7 +90,7 @@ vector<VM::vec2> GenUV(const vector<VM::vec4> &mesh)
 {
     vector<VM::vec2> uv;
     for(const VM::vec4 & v : mesh){
-        uv.push_back(VM::vec2(v.x, v.y));
+        uv.push_back(VM::vec2(1.f - v.x, 1.f - v.y));
     }
     return uv;
 }
@@ -114,17 +118,24 @@ void Grass::Create() {
     glBindVertexArray(grassVAO);                                                 CHECK_GL_ERRORS
 
     // VBO
-    GLuint buffers[3];
+    GLuint buffers[4];
     int bufCount = sizeof(buffers)/sizeof(buffers[0]);
     glGenBuffers(bufCount, buffers);                                              CHECK_GL_ERRORS
 
     GLuint pointsBuffer = buffers[0];
     GLuint positionBuffer = buffers[1];
     grassVariance = buffers[2];
+    GLuint uvVBO = buffers[3];
+
+
+
+    texture = GL::LoadTexture(FILENAME_TEXTURE_GRASS, GL_CLAMP_TO_BORDER);
+
 
     GLuint pointsLocation = glGetAttribLocation(grassShader, "point");           CHECK_GL_ERRORS
     GLuint positionLocation = glGetAttribLocation(grassShader, "position");      CHECK_GL_ERRORS
     GLuint varianceLocation = glGetAttribLocation(grassShader, "variance");      CHECK_GL_ERRORS
+    GLuint uvpointLocation = glGetAttribLocation(grassShader, "uvpoint");        CHECK_GL_ERRORS
 
 
     // mesh points
@@ -157,6 +168,17 @@ void Grass::Create() {
     glEnableVertexAttribArray(varianceLocation);                                 CHECK_GL_ERRORS
     glVertexAttribPointer(varianceLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);        CHECK_GL_ERRORS
     glVertexAttribDivisor(varianceLocation, 1);                                  CHECK_GL_ERRORS
+
+
+    // uv points
+    glBindBuffer(GL_ARRAY_BUFFER, uvVBO);                                       CHECK_GL_ERRORS
+    glBufferData(GL_ARRAY_BUFFER, sizeof(uvPoints[0]) * uvPoints.size(),
+                 uvPoints.data(), GL_STATIC_DRAW);                              CHECK_GL_ERRORS
+
+    glEnableVertexAttribArray(uvpointLocation);                                 CHECK_GL_ERRORS
+    glVertexAttribPointer(uvpointLocation, 2, GL_FLOAT, GL_FALSE, 0, 0);        CHECK_GL_ERRORS
+
+
 
     // Отвязываем VAO
     glBindVertexArray(0);                                                        CHECK_GL_ERRORS
