@@ -5,15 +5,43 @@
 
 Grass::Grass(GL::Camera& camera_ref)
         : grassVarianceData(GRASS_INSTANCES),
+          grassVelocity(GRASS_INSTANCES),
           camera(camera_ref)
-{}
+{
+    prevTimestamp = 0;
+}
 
 // Обновление смещения травинок
 void Grass::UpdateGrassVariance() {
+
+    int timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+    int deltaTime;
+    if(prevTimestamp)
+        deltaTime = timeSinceStart - prevTimestamp;
+    else
+        deltaTime = 0;
+    prevTimestamp = timeSinceStart;
+
+    //deltaTime = 1;
+
+    std::cout << deltaTime << std::endl;
+
+    //dp = m*(v1-v2) = dF / dt
+    float balancePoint = 0.01;
+    float k = .1;
+    float speed = 1e-3;
+    //TODO: добавить силу трения!
+
     // Генерация случайных смещений
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        grassVarianceData[i].x = (float)rand() / RAND_MAX / 100;
-        grassVarianceData[i].z = (float)rand() / RAND_MAX / 100;
+        float newx = grassVarianceData[i].x + deltaTime * grassVelocity[i].x;
+        float newz = grassVarianceData[i].z + deltaTime * grassVelocity[i].z;
+        //(float(rand()) / RAND_MAX - .5f) / 40000;
+        grassVelocity[i].x += speed * ( - k * (grassVarianceData[i].x - balancePoint)) * cos(windDirection);
+        grassVelocity[i].z += speed * ( - k * (grassVarianceData[i].z - balancePoint)) * sin(windDirection);
+
+        grassVarianceData[i].x = newx;
+        grassVarianceData[i].z = newz;
     }
 
     // Привязываем буфер, содержащий смещения
@@ -67,12 +95,12 @@ double Crop(double a)
 
 vector<VM::vec2> Grass::GenerateGrassPositions() {
     vector<VM::vec2> grassPositions(GRASS_INSTANCES);
-    double width = sqrt(GRASS_INSTANCES) + .5;
-    double k = 1;
+    float width = sqrt(GRASS_INSTANCES) + .5;
+    float k = 1;
 
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        double x = i % int(width);
-        double y = i / int(width);
+        float x = i % int(width);
+        float y = i / int(width);
         x += k * (float(rand()) / RAND_MAX - .5f);
         y += k * (float(rand()) / RAND_MAX);
         x = x/width;
@@ -86,33 +114,6 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
 
     return grassPositions;
 }
-
-// Здесь вам нужно будет генерировать меш
-vector<VM::vec4> GenMesh(uint n) {
-    return {
-            VM::vec4(0, 0, 0, 1),
-            VM::vec4(1, 0, 0, 1),
-            VM::vec4(0, .5, 0, 1),
-
-            VM::vec4(0, .5, 0, 1),
-            VM::vec4(1, 0, 0, 1),
-            VM::vec4(0, 1, 0, 1),
-
-            VM::vec4(1, 0, 0, 1),
-            VM::vec4(.5, 1, 0, 1),
-            VM::vec4(0, 1, 0, 1),
-    };
-}
-
-vector<VM::vec2> GenUV(const vector<VM::vec4> &mesh)
-{
-    vector<VM::vec2> uv;
-    for(const VM::vec4 & v : mesh){
-        uv.push_back(VM::vec2(1.f - v.x, 1.f - v.y));
-    }
-    return uv;
-}
-
 
 void Grass::CreateVAO()
 {

@@ -26,10 +26,13 @@ private:
     vector<unsigned char> indices;
     vector<VM::vec2> grassPositions;
 
+    int prevTimestamp;
+
     GLuint grassShader;      // Шейдер, рисующий траву
     GLuint grassVAO;         // VAO для травы (что такое VAO почитайте в доках)
     GLuint grassVariance;    // Буфер для смещения координат травинок
     vector<VM::vec4> grassVarianceData; // Вектор со смещениями для координат травинок
+    vector<VM::vec4> grassVelocity; // Вектор со смещениями для координат травинок
 
 private:
     void CreateVAO();
