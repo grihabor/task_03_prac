@@ -11,6 +11,16 @@ Grass::Grass(GL::Camera& camera_ref)
     prevTimestamp = 0;
 }
 
+namespace VM {
+    vec4 operator*(float a, vec4 v){
+        return vec4(a, a, a, a)*vec4(v[0], v[1], v[2], v[3]);
+    }
+    vec4 operator-(vec4 v, float a){
+        return vec4(v[0], v[1], v[2], v[3])-vec4(a, a, a, a);
+    }
+}
+
+
 // Обновление смещения травинок
 void Grass::UpdateGrassVariance() {
 
@@ -32,16 +42,19 @@ void Grass::UpdateGrassVariance() {
     float speed = 1e-3;
     //TODO: добавить силу трения!
 
-    // Генерация случайных смещений
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        float newx = grassVarianceData[i].x + deltaTime * grassVelocity[i].x;
-        float newz = grassVarianceData[i].z + deltaTime * grassVelocity[i].z;
-        //(float(rand()) / RAND_MAX - .5f) / 40000;
-        grassVelocity[i].x += speed * ( - k * (grassVarianceData[i].x - balancePoint)) * cos(windDirection);
-        grassVelocity[i].z += speed * ( - k * (grassVarianceData[i].z - balancePoint)) * sin(windDirection);
+        VM::vec4 newVariance = grassVarianceData[i] + deltaTime * grassVelocity[i];
 
-        grassVarianceData[i].x = newx;
-        grassVarianceData[i].z = newz;
+        //(float(rand()) / RAND_MAX - .5f) / 40000;
+
+        //VM::vec4 windForce = windDirection;
+
+
+        grassVelocity[i] += speed * ( - k * (grassVarianceData[i] - balancePoint)) * cos(windDirection);
+
+        grassVarianceData[i] = newVariance;
+        if(i == 0)
+            std::cout << newVariance.x << ' ' << newVariance.z << std::endl;
     }
 
     // Привязываем буфер, содержащий смещения

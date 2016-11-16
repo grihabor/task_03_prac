@@ -100,6 +100,7 @@ namespace GL {
             }
 
         }
+
         return maxIndex - '0';
     }
 }

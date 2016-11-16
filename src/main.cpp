@@ -20,8 +20,8 @@ Ground ground(camera);
 
 
 // Размеры экрана
-uint screenWidth = 800;
-uint screenHeight = 600;
+uint screenWidth = 2*800;
+uint screenHeight = 2*600;
 
 // Это для захвата мышки. Вам это не потребуется (это не значит, что нужно удалять эту строку)
 bool captureMouse = true;
