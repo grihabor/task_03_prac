@@ -9,34 +9,24 @@ uniform mat4 camera;
 
 out vec2 UV;
 
-vec4 bend(vec4 p, float phi, float l)
+vec4 bend(vec4 p)
 {
-    float magn = phi;
+    float magn = sqrt(variance[0]*variance[0]+variance[1]*variance[1]);
     mat4 rotationWind = mat4(1.0);
     rotationWind[0][0] = variance[0]/magn;
     rotationWind[2][0] = - variance[1]/magn;
-    rotationWind[0][2] = variance[1]/magn;
+    rotationWind[0][2] = - rotationWind[2][0];
     rotationWind[2][2] = rotationWind[0][0];
 
-    mat4 rotationWindRev = mat4(1.0);
-    rotationWindRev[0][0] = variance[0]/magn;
-    rotationWindRev[2][0] = - variance[1]/magn;
-    rotationWindRev[0][2] = variance[1]/magn;
-    rotationWindRev[2][2] = rotationWindRev[0][0];
-
-
+    float phi = magn;
     vec4 t = rotationWind * vec4(
         0,
-        .5*l*p.y*(p.y*(cos(phi)-1)+2),
-        .5*l*sin(phi)*p.y*p.y,
+        .5*p.y*(p.y*(cos(phi)-1)+2),
+        .5*sin(phi)*p.y*p.y,
         1
     );
-    return t + vec4(
-        p.x,
-        0,
-        0,
-        0
-    );
+    t.x += p.x;
+    return t;
 }
 
 void main()
@@ -49,14 +39,6 @@ void main()
     positionMatrix[3][0] = position.x;
     positionMatrix[3][2] = position.y;
 
-    float magn = sqrt(variance[0]*variance[0]+variance[1]*variance[1]);
-
-
-    float t = point.y;
-    float phi = magn;
-    float l = 1;
-
     UV = uvpoint;
-	gl_Position = camera * (positionMatrix * scaleMatrix * bend(point, phi, l));
-	    //+ variance * point.y);
+	gl_Position = camera * (positionMatrix * scaleMatrix * bend(point));
 }
