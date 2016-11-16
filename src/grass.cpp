@@ -6,17 +6,21 @@
 Grass::Grass(GL::Camera& camera_ref)
         : grassVarianceData(GRASS_INSTANCES),
           grassVelocity(GRASS_INSTANCES),
-          camera(camera_ref)
-{
-    prevTimestamp = 0;
-}
+          camera(camera_ref),
+          windPhase(0),
+          prevTimestamp(0),
+          windDirection(0.3)
+{}
 
 namespace VM {
-    vec4 operator*(float a, vec4 v){
-        return vec4(a, a, a, a)*vec4(v[0], v[1], v[2], v[3]);
+    vec2 operator*(float a, vec2 v){
+        return vec2(a, a)*v;
     }
-    vec4 operator-(vec4 v, float a){
-        return vec4(v[0], v[1], v[2], v[3])-vec4(a, a, a, a);
+    vec2 operator-(vec2 v, float a){
+        return v-vec2(a, a);
+    }
+    vec2 abs(vec2 v){
+        return vec2(std::abs(v.x), std::abs(v.y));
     }
 }
 
@@ -34,27 +38,47 @@ void Grass::UpdateGrassVariance() {
 
     //deltaTime = 1;
 
-    std::cout << deltaTime << std::endl;
+    //std::cout << deltaTime << std::endl;
 
-    //dp = m*(v1-v2) = dF / dt
-    float balancePoint = 0.01;
+    float windMagnitude;//0.1 + 0.2*(float(rand()) / RAND_MAX - .5f);
+    float balancePoint = 0.1;
     float k = .1;
-    float speed = 1e-3;
-    //TODO: добавить силу трения!
+    float mass = 1e4;
+    float friction = 15;
+
+    if(windFlag) {
+        windPhase += 1e-3 * deltaTime;
+        windDirection += 1e-4 * deltaTime;
+    }
+    float windFrequency = 4;
 
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        VM::vec4 newVariance = grassVarianceData[i] + deltaTime * grassVelocity[i];
 
-        //(float(rand()) / RAND_MAX - .5f) / 40000;
+        VM::vec2 newVariance = grassVarianceData[i] + deltaTime * grassVelocity[i];
 
-        //VM::vec4 windForce = windDirection;
+        VM::vec2 windForce(0.f);
+        if(windFlag) {
+            float t = cos(windDirection) * grassPositions[i].x -
+                      sin(windDirection) * grassPositions[i].y;
+
+            windMagnitude = std::sin(windFrequency * 1.57 * t + windPhase);
+            windMagnitude *= 0.1 * windMagnitude;
+            windForce = windMagnitude * VM::vec2(sin(windDirection), cos(windDirection));
+        }
 
 
-        grassVelocity[i] += speed * ( - k * (grassVarianceData[i] - balancePoint)) * cos(windDirection);
+
+
+        VM::vec2 hookForce = -k * (grassVarianceData[i] - balancePoint)
+                             * abs(grassVarianceData[i] - balancePoint);
+        VM::vec2 frictionForce = - friction * grassVelocity[i];
+
+
+        grassVelocity[i] += deltaTime * (hookForce + windForce + frictionForce) / mass;
 
         grassVarianceData[i] = newVariance;
         if(i == 0)
-            std::cout << newVariance.x << ' ' << newVariance.z << std::endl;
+            std::cout << newVariance.x << ' ' << newVariance.y << std::endl;
     }
 
     // Привязываем буфер, содержащий смещения
@@ -138,7 +162,7 @@ void Grass::InitMeshAndUV()
 {
     grassPositions = GenerateGrassPositions();
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
-        grassVarianceData[i] = VM::vec4(0, 0, 0, 0);
+        grassVarianceData[i] = VM::vec2(0, 0);
     }
 
     texture = GL::LoadTexture(FILENAME_TEXTURE_GRASS, GL_CLAMP_TO_BORDER, GL_LINEAR);
@@ -204,7 +228,7 @@ void Grass::Create() {
     BindDataAndAttribute(positionBuffer, grassPositions, positionLocation, 2, true);
 
     // grass variance
-    BindDataAndAttribute(grassVariance, grassVarianceData, varianceLocation, 4, true);
+    BindDataAndAttribute(grassVariance, grassVarianceData, varianceLocation, 2, true);
 
     // uv points
     BindDataAndAttribute(uvBuffer, uvPoints, uvpointLocation, 2, false);

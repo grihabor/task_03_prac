@@ -104,7 +104,8 @@ float length(const vec3 &v) {
 
 ///Dot production
 float dot(const vec3 &v, const vec3 &w) {
-    return v.x * w.x + v.y * w.y + v.z * w.z;
+    float t = v.x * w.x + v.y * w.y + v.z * w.z;
+    return t;
 }
 
 ///Cross production

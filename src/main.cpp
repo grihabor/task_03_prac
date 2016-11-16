@@ -52,6 +52,12 @@ void KeyboardEvents(unsigned char key, int x, int y) {
         camera.goForward();
     } else if (key == 's') {
         camera.goBack();
+    } else if (key == 'a') {
+        camera.goLeft();
+    } else if (key == 'd') {
+        camera.goRight();
+    } else if (key == 'i') {
+        grass.WindSwitch();
     } else if (key == 'm') {
         captureMouse = !captureMouse;
         if (captureMouse) {
@@ -125,6 +131,10 @@ void InitializeGLUT(int argc, char **argv) {
     glutPassiveMotionFunc(MouseMove);
     glutMouseFunc(MouseClick);
     glutReshapeFunc(windowReshapeFunc);
+
+    // enable face culling
+    //glEnable( GL_CULL_FACE );
+    //glFrontFace( GL_CW );
 }
 
 
