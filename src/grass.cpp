@@ -152,6 +152,17 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
     return grassPositions;
 }
 
+vector<float> Grass::GenerateGrassRotations()
+{
+    vector<float> grassRotations(GRASS_INSTANCES);
+
+    for(int i = 0; i < GRASS_INSTANCES; ++i){
+        grassRotations[i] = float(rand()) / RAND_MAX * 1.57f;
+    }
+
+    return grassRotations;
+}
+
 void Grass::CreateVAO()
 {
     glGenVertexArrays(1, &grassVAO);                                             CHECK_GL_ERRORS
@@ -161,6 +172,8 @@ void Grass::CreateVAO()
 void Grass::InitMeshAndUV()
 {
     grassPositions = GenerateGrassPositions();
+    grassRotations = GenerateGrassRotations();
+
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
         grassVarianceData[i] = VM::vec2(0, 0);
     }
@@ -199,12 +212,13 @@ void Grass::Create() {
     CreateVAO();
 
     // VBO
-    GLuint buffers[5];
+    GLuint buffers[6];
     int bufCount = sizeof(buffers)/sizeof(buffers[0]);
     glGenBuffers(bufCount, buffers);                                              CHECK_GL_ERRORS
 
     GLuint pointsBuffer = buffers[0];
     GLuint positionBuffer = buffers[1];
+    GLuint rotationBuffer = buffers[5];
     grassVariance = buffers[2];
     GLuint uvBuffer = buffers[3];
     indexBuffer = buffers[4];
@@ -212,6 +226,7 @@ void Grass::Create() {
 
     GLuint pointsLocation = glGetAttribLocation(grassShader, "point");           CHECK_GL_ERRORS
     GLuint positionLocation = glGetAttribLocation(grassShader, "position");      CHECK_GL_ERRORS
+    GLuint rotationLocation = glGetAttribLocation(grassShader, "rotation");      CHECK_GL_ERRORS
     GLuint varianceLocation = glGetAttribLocation(grassShader, "variance");      CHECK_GL_ERRORS
     GLuint uvpointLocation = glGetAttribLocation(grassShader, "uvpoint");        CHECK_GL_ERRORS
 
@@ -226,6 +241,8 @@ void Grass::Create() {
 
     // grass position
     BindDataAndAttribute(positionBuffer, grassPositions, positionLocation, 2, true);
+    // grass rotation
+    BindDataAndAttribute(rotationBuffer, grassRotations, rotationLocation, 1, true);
 
     // grass variance
     BindDataAndAttribute(grassVariance, grassVarianceData, varianceLocation, 2, true);

@@ -1,20 +1,28 @@
 #version 330
 
+//mesh
 in vec4 point;
-in vec2 position;
-in vec2 variance;
+// texture(u, v)
 in vec2 uvpoint;
+
+// position(x, z) and rotation(phi)
+in vec2 position;
+in float rotation;
+
+// bend(x, z)
+in vec2 variance;
+
 
 uniform mat4 camera;
 
 out vec2 UV;
 
-vec4 bend(vec4 p)
+vec4 bend(vec4 p, vec2 var)
 {
-    float magn = sqrt(variance[0]*variance[0]+variance[1]*variance[1]);
+    float magn = sqrt(var[0]*var[0]+var[1]*var[1]);
     mat4 rotationWind = mat4(1.0);
-    rotationWind[0][0] = variance[0]/magn;
-    rotationWind[2][0] = - variance[1]/magn;
+    rotationWind[0][0] = var[0]/magn;
+    rotationWind[2][0] = - var[1]/magn;
     rotationWind[0][2] = - rotationWind[2][0];
     rotationWind[2][2] = rotationWind[0][0];
 
@@ -25,7 +33,7 @@ vec4 bend(vec4 p)
         .5*sin(phi)*p.y*p.y,
         1
     );
-    t.x += p.x;
+    t.x += p.x - .2;
     return t;
 }
 
@@ -39,6 +47,18 @@ void main()
     positionMatrix[3][0] = position.x;
     positionMatrix[3][2] = position.y;
 
+    mat4 rotationMatrix = mat4(1.0);
+    float phi = rotation;
+    rotationMatrix[0][0] = cos(phi);
+    rotationMatrix[2][0] = - sin(phi);
+    rotationMatrix[0][2] = - rotationMatrix[2][0];
+    rotationMatrix[2][2] = rotationMatrix[0][0];
+
+    vec2 var = vec2(
+        cos(phi) * variance.x + sin(phi) * variance.y,
+        - sin(phi) * variance.x + cos(phi) * variance.y
+    );
+
     UV = uvpoint;
-	gl_Position = camera * (positionMatrix * scaleMatrix * bend(point));
+	gl_Position = camera * (positionMatrix * scaleMatrix * rotationMatrix * bend(point, var));
 }

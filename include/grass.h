@@ -29,6 +29,7 @@ private:
     vector<unsigned char> faces;
     vector<unsigned char> indices;
     vector<VM::vec2> grassPositions;
+    vector<float> grassRotations;
 
     GLuint grassShader;      // Шейдер, рисующий траву
     GLuint grassVAO;         // VAO для травы (что такое VAO почитайте в доках)
@@ -39,12 +40,13 @@ private:
 private:
     void CreateVAO();
     void InitMeshAndUV();
+    vector<float> GenerateGrassRotations();
+    vector<VM::vec2> GenerateGrassPositions();
 
 public:
     Grass(GL::Camera& camera_ref);
     void UpdateGrassVariance();
     void Draw();
-    vector<VM::vec2> GenerateGrassPositions();
     void Create();
     void WindSwitch(){windFlag = !windFlag;}
 };
