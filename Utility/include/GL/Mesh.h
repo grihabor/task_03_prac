@@ -5,6 +5,7 @@
 #include <string>
 #include "vec3.h"
 #include "vec2.h"
+#include "Camera.h"
 
 namespace GL
 {
@@ -19,6 +20,10 @@ namespace GL
 
     public:
         Mesh(std::string filename);
+        Mesh();
+        virtual void Draw(const Camera &camera) = 0;
+        virtual void Create() = 0;
+        virtual ~Mesh();
     };
 }
 

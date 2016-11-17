@@ -3,8 +3,9 @@
 
 #include "Utility.h"
 #include "Texture.h"
+#include "Mesh.h"
 
-class Ground
+class Ground : public GL::Mesh
 {
 private:
     GLuint groundShader; // Шейдер для земли
@@ -13,8 +14,8 @@ private:
 
 public:
     Ground();
-    void Draw(const GL::Camera &camera);
-    void Create();
+    void Draw(const GL::Camera &camera) override;
+    void Create() override;
 };
 
 #endif //TASK_03_GROUND_H

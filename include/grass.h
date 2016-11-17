@@ -3,12 +3,13 @@
 
 #include "Utility.h"
 #include <vector>
+#include "Mesh.h"
 #include "Texture.h"
 
 using std::vector;
 
 
-class Grass
+class Grass : public GL::Mesh
 {
 private:
     const uint GRASS_INSTANCES = 100 * 100; // Количество травинок
@@ -45,8 +46,8 @@ private:
 public:
     Grass();
     void UpdateGrassVariance();
-    void Draw(const GL::Camera &camera);
-    void Create();
+    void Draw(const GL::Camera &camera) override;
+    void Create() override;
     void WindSwitch(){windFlag = !windFlag;}
 };
 

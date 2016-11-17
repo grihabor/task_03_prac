@@ -29,6 +29,12 @@ struct ObjException : std::exception
     {}
 };
 
+GL::Mesh::Mesh()
+{}
+
+GL::Mesh::~Mesh()
+{}
+
 GL::Mesh::Mesh(std::string filename) {
     filename = std::string("mesh/") + filename + ".obj";
     std::ifstream file(filename);
