@@ -1,6 +1,8 @@
 #ifndef TASK_03_SCENE_H
 #define TASK_03_SCENE_H
 
+#include "Camera.h"
+
 class Scene
 {
 
