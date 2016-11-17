@@ -6,21 +6,21 @@
 #include "vec3.h"
 #include "vec2.h"
 #include "Camera.h"
+#include "GL.h"
 
 namespace GL
 {
     class Mesh
     {
-        std::string name;
+    protected:
+        GLuint shader;
+        GLuint vao;
 
-        std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-        std::vector< VM::vec3 > vertices;
-        std::vector< VM::vec2 > uvs;
-        std::vector< VM::vec3 > normals;
+    private:
+        void CreateVAO();
 
     public:
         Mesh(std::string filename);
-        Mesh();
         virtual void Draw(const Camera &camera) = 0;
         virtual void Create() = 0;
         virtual ~Mesh();

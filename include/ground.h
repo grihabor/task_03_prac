@@ -8,8 +8,6 @@
 class Ground : public GL::Mesh
 {
 private:
-    GLuint groundShader; // Шейдер для земли
-    GLuint groundVAO; // VAO для земли
     GL::Texture texture;
 
 public:

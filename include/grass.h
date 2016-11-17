@@ -31,8 +31,6 @@ private:
     vector<VM::vec2> grassPositions;
     vector<float> grassRotations;
 
-    GLuint grassShader;      // Шейдер, рисующий траву
-    GLuint grassVAO;         // VAO для травы (что такое VAO почитайте в доках)
     GLuint grassVariance;    // Буфер для смещения координат травинок
     vector<VM::vec2> grassVarianceData; // Вектор со смещениями для координат травинок
     vector<VM::vec2> grassVelocity; // Вектор со смещениями для координат травинок

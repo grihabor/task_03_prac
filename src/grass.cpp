@@ -4,7 +4,8 @@
 
 
 Grass::Grass()
-        : grassVarianceData(GRASS_INSTANCES),
+        : Mesh("grass"),
+          grassVarianceData(GRASS_INSTANCES),
           grassVelocity(GRASS_INSTANCES),
           windPhase(0),
           prevTimestamp(0),
@@ -76,8 +77,6 @@ void Grass::UpdateGrassVariance() {
         grassVelocity[i] += deltaTime * (hookForce + windForce + frictionForce) / mass;
 
         grassVarianceData[i] = newVariance;
-        if(i == 0)
-            std::cout << newVariance.x << ' ' << newVariance.y << std::endl;
     }
 
     // Привязываем буфер, содержащий смещения
@@ -92,12 +91,12 @@ void Grass::UpdateGrassVariance() {
 // Рисование травы
 void Grass::Draw(const GL::Camera &camera) {
     // Тут то же самое, что и в рисовании земли
-    glUseProgram(grassShader);                                                  CHECK_GL_ERRORS
-    GLint cameraLocation = glGetUniformLocation(grassShader, "camera");         CHECK_GL_ERRORS
+    glUseProgram(shader);                                                  CHECK_GL_ERRORS
+    GLint cameraLocation = glGetUniformLocation(shader, "camera");         CHECK_GL_ERRORS
     glUniformMatrix4fv(cameraLocation, 1, GL_TRUE,
                        camera.getMatrix().data().data());                       CHECK_GL_ERRORS
 
-    glBindVertexArray(grassVAO);                                                CHECK_GL_ERRORS
+    glBindVertexArray(vao);                                                CHECK_GL_ERRORS
     glBindTexture(GL_TEXTURE_2D, texture.id);                                   CHECK_GL_ERRORS
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);                         CHECK_GL_ERRORS
 
@@ -162,12 +161,6 @@ vector<float> Grass::GenerateGrassRotations()
     return grassRotations;
 }
 
-void Grass::CreateVAO()
-{
-    glGenVertexArrays(1, &grassVAO);                                             CHECK_GL_ERRORS
-    glBindVertexArray(grassVAO);                                                 CHECK_GL_ERRORS
-}
-
 void Grass::InitMeshAndUV()
 {
     grassPositions = GenerateGrassPositions();
@@ -205,10 +198,7 @@ void BindDataAndAttribute(GLuint buffer, vector<T> &data, GLuint location, int n
 
 // Создание травы
 void Grass::Create() {
-    grassShader = GL::CompileShaderProgram("grass");
-
     InitMeshAndUV();
-    CreateVAO();
 
     // VBO
     GLuint buffers[6];
@@ -223,11 +213,11 @@ void Grass::Create() {
     indexBuffer = buffers[4];
 
 
-    GLuint pointsLocation = glGetAttribLocation(grassShader, "point");           CHECK_GL_ERRORS
-    GLuint positionLocation = glGetAttribLocation(grassShader, "position");      CHECK_GL_ERRORS
-    GLuint rotationLocation = glGetAttribLocation(grassShader, "rotation");      CHECK_GL_ERRORS
-    GLuint varianceLocation = glGetAttribLocation(grassShader, "variance");      CHECK_GL_ERRORS
-    GLuint uvpointLocation = glGetAttribLocation(grassShader, "uvpoint");        CHECK_GL_ERRORS
+    GLuint pointsLocation = glGetAttribLocation(shader, "point");           CHECK_GL_ERRORS
+    GLuint positionLocation = glGetAttribLocation(shader, "position");      CHECK_GL_ERRORS
+    GLuint rotationLocation = glGetAttribLocation(shader, "rotation");      CHECK_GL_ERRORS
+    GLuint varianceLocation = glGetAttribLocation(shader, "variance");      CHECK_GL_ERRORS
+    GLuint uvpointLocation = glGetAttribLocation(shader, "uvpoint");        CHECK_GL_ERRORS
 
 
     // indices

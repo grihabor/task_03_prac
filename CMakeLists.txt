@@ -27,6 +27,7 @@ set(SOURCE_FILES
     Utility/src/vec4.cpp
         src/main.cpp
         src/scene.cpp
+        src/object.cpp
         src/grass.cpp
         src/ground.cpp)
 

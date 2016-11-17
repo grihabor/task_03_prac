@@ -7,22 +7,23 @@ using std::cout;
 using std::endl;
 
 Ground::Ground()
+    : Mesh("ground")
 {}
 
 // Функция, рисующая землю
 void Ground::Draw(const GL::Camera &camera) {
     // Используем шейдер для земли
-    glUseProgram(groundShader);                                                 CHECK_GL_ERRORS
+    glUseProgram(shader);                                                 CHECK_GL_ERRORS
 
     // Устанавливаем юниформ для шейдера. В данном случае передадим перспективную матрицу камеры
     // Находим локацию юниформа 'camera' в шейдере
-    GLint cameraLocation = glGetUniformLocation(groundShader, "camera");        CHECK_GL_ERRORS
+    GLint cameraLocation = glGetUniformLocation(shader, "camera");        CHECK_GL_ERRORS
     // Устанавливаем юниформ (загружаем на GPU матрицу проекции?)
     glUniformMatrix4fv(cameraLocation, 1, GL_TRUE,
                        camera.getMatrix().data().data());                       CHECK_GL_ERRORS
 
     // Подключаем VAO, который содержит буферы, необходимые для отрисовки земли
-    glBindVertexArray(groundVAO);                                               CHECK_GL_ERRORS
+    glBindVertexArray(vao);                                               CHECK_GL_ERRORS
     glBindTexture(GL_TEXTURE_2D, texture.id);                                   CHECK_GL_ERRORS
 
     // Рисуем землю: 2 треугольника (6 вершин)
@@ -61,11 +62,7 @@ void Ground::Create() {
     };
 
 
-    groundShader = GL::CompileShaderProgram("ground");
 
-    // VAO
-    glGenVertexArrays(1, &groundVAO);                                           CHECK_GL_ERRORS
-    glBindVertexArray(groundVAO);                                               CHECK_GL_ERRORS
 
     // VBO
     GLuint vboArray[2];
@@ -79,8 +76,8 @@ void Ground::Create() {
     texture = GL::LoadTexture("Texture/ground.jpg", GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR);
     //GL::bindTexture(groundShader, "textureSampler", texture);
 
-    GLuint pointLocation = glGetAttribLocation(groundShader, "point");          CHECK_GL_ERRORS
-    GLuint uvpointLocation = glGetAttribLocation(groundShader, "uvpoint");      CHECK_GL_ERRORS
+    GLuint pointLocation = glGetAttribLocation(shader, "point");          CHECK_GL_ERRORS
+    GLuint uvpointLocation = glGetAttribLocation(shader, "uvpoint");      CHECK_GL_ERRORS
 
 
     // mesh points
