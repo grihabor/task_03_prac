@@ -7,14 +7,13 @@
 class Ground
 {
 private:
-    GL::Camera &camera;
     GLuint groundShader; // Шейдер для земли
     GLuint groundVAO; // VAO для земли
     GL::Texture texture;
 
 public:
-    Ground(GL::Camera &camera_ref);
-    void Draw();
+    Ground();
+    void Draw(const GL::Camera &camera);
     void Create();
 };
 

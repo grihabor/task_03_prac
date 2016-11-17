@@ -14,7 +14,6 @@ private:
     const uint GRASS_INSTANCES = 100 * 100; // Количество травинок
     const char *FILENAME_TEXTURE_GRASS = "Texture/grass_1.png";
 
-    GL::Camera& camera;
     GLuint indexBuffer;
     int nTriangles;
     GL::Texture texture;
@@ -44,9 +43,9 @@ private:
     vector<VM::vec2> GenerateGrassPositions();
 
 public:
-    Grass(GL::Camera& camera_ref);
+    Grass();
     void UpdateGrassVariance();
-    void Draw();
+    void Draw(const GL::Camera &camera);
     void Create();
     void WindSwitch(){windFlag = !windFlag;}
 };

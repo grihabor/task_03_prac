@@ -20,6 +20,7 @@ set(SOURCE_FILES
     Utility/src/Overall.cpp
     Utility/src/ShaderProgram.cpp
     Utility/src/Texture.cpp
+    Utility/src/Mesh.cpp
     Utility/src/uvec3.cpp
     Utility/src/vec2.cpp
     Utility/src/vec3.cpp
@@ -39,4 +40,7 @@ add_custom_target(textures ${CMAKE_COMMAND} -E copy_directory
 add_custom_target(shaders ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/shaders $<TARGET_FILE_DIR:task_03>/shaders)
 
-add_custom_target(program DEPENDS shaders textures)
+add_custom_target(mesh ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/mesh $<TARGET_FILE_DIR:task_03>/mesh)
+
+add_custom_target(program DEPENDS shaders textures mesh)

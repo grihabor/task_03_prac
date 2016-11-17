@@ -3,10 +3,9 @@
 
 
 
-Grass::Grass(GL::Camera& camera_ref)
+Grass::Grass()
         : grassVarianceData(GRASS_INSTANCES),
           grassVelocity(GRASS_INSTANCES),
-          camera(camera_ref),
           windPhase(0),
           prevTimestamp(0),
           windDirection(0.3)
@@ -91,7 +90,7 @@ void Grass::UpdateGrassVariance() {
 }
 
 // Рисование травы
-void Grass::Draw() {
+void Grass::Draw(const GL::Camera &camera) {
     // Тут то же самое, что и в рисовании земли
     glUseProgram(grassShader);                                                  CHECK_GL_ERRORS
     GLint cameraLocation = glGetUniformLocation(grassShader, "camera");         CHECK_GL_ERRORS

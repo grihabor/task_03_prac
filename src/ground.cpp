@@ -6,12 +6,11 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-Ground::Ground(GL::Camera &camera_ref)
-        : camera(camera_ref)
+Ground::Ground()
 {}
 
 // Функция, рисующая землю
-void Ground::Draw() {
+void Ground::Draw(const GL::Camera &camera) {
     // Используем шейдер для земли
     glUseProgram(groundShader);                                                 CHECK_GL_ERRORS
 

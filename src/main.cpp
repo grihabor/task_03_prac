@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <GL/Mesh.h>
 
 #include "Utility.h"
 #include "grass.h"
@@ -10,13 +11,9 @@
 
 using namespace std;
 
-
-GL::Camera camera;               // Мы предоставляем Вам реализацию камеры. В OpenGL камера - это просто 2 матрицы. Модельно-видовая матрица и матрица проекции. // ###
-                                 // Задача этого класса только в том чтобы обработать ввод с клавиатуры и правильно сформировать эти матрицы.
-                                 // Вы можете просто пользоваться этим классом для расчёта указанных матриц.
-
-Grass grass(camera);
-Ground ground(camera);
+GL::Camera camera;
+Grass grass;
+Ground ground;
 
 
 // Размеры экрана
@@ -34,8 +31,8 @@ void RenderLayouts() {
     // Очистка буфера глубины и цветового буфера
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Рисуем меши
-    ground.Draw();
-    grass.Draw();
+    ground.Draw(camera);
+    grass.Draw(camera);
     glutSwapBuffers();
 }
 
@@ -154,6 +151,10 @@ void CreateCamera() {
 int main(int argc, char **argv)
 {
     putenv("MESA_GL_VERSION_OVERRIDE=3.3COMPAT");
+
+    GL::Mesh rock("cube");
+
+
     try {
         cout << "Start" << endl;
         InitializeGLUT(argc, argv);

@@ -26,7 +26,7 @@ Camera::Camera(const vec3& position,
        this->zfar = zfar;
     }
 
-mat4 Camera::getMatrix() {
+mat4 Camera::getMatrix() const {
     vec3 z = normalize(direction);
     vec3 x = normalize(cross(up, z));
     vec3 y = normalize(cross(z, x));

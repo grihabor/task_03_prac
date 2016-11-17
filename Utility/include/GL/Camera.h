@@ -20,7 +20,7 @@ public:
            const float znear,
            const float zfar);
 
-    VM::mat4 getMatrix();
+    VM::mat4 getMatrix() const;
 
     void rotateLeft(const float angle=0.05f);
     void rotateTop(const float angle=0.05f);
