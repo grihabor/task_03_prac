@@ -106,7 +106,7 @@ void Scene::windowReshapeFunc(GLint newWidth, GLint newHeight) {
 
 void Scene::InitializeGLUT(int argc, char **argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitContextVersion(3, 0);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitWindowPosition(-1, -1);
