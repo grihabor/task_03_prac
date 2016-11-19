@@ -105,6 +105,8 @@ void Grass::Draw(const GL::Camera &camera) {
     // Отрисовка травинок в количестве GRASS_INSTANCES
     //glDrawArraysInstanced(GL_TRIANGLES, 0, grassPointsCount, GRASS_INSTANCES);   CHECK_GL_ERRORS
 
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
     glDrawElementsInstanced(
         GL_TRIANGLES,
         nTriangles*3,
