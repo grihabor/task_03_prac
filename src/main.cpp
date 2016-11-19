@@ -36,9 +36,6 @@ int main(int argc, char **argv)
 {
     putenv("MESA_GL_VERSION_OVERRIDE=3.3COMPAT");
 
-    //GL::Mesh rock("cube");
-
-
     try {
         cout << "Start" << endl;
         auto scene = Scene::GetScene(argc, argv, KeyboardEvents);
@@ -51,6 +48,7 @@ int main(int argc, char **argv)
         scene->AddMesh(grass);
         cout << "Grass created" << endl;
 
+        //GL::Mesh rock("cube");
 
         glutMainLoop();
 

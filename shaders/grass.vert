@@ -41,12 +41,13 @@ vec4 bend(vec4 p, vec2 var)
 void main()
 {
     UV = uvpoint;
-    color_coef = float(gl_InstanceID % 17)/32 + 0.5;
+    color_coef = 0.3*float(gl_InstanceID % 17)/16 + 0.7;
+    float size_variance = 1. + 0.1*(float(gl_InstanceID % 19)/18 - .5);
 
     mat4 scaleMatrix = mat4(1.0);
-    scaleMatrix[0][0] = 0.07;
-    scaleMatrix[1][1] = 0.07;
-    scaleMatrix[2][2] = 0.07;
+    scaleMatrix[0][0] = 0.07*size_variance;
+    scaleMatrix[1][1] = 0.07*size_variance;
+    scaleMatrix[2][2] = 0.07*size_variance;
     mat4 positionMatrix = mat4(1.0);
     positionMatrix[3][0] = position.x;
     positionMatrix[3][2] = position.y;
