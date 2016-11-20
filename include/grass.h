@@ -31,6 +31,8 @@ private:
     vector<VM::vec2> grassPositions;
     vector<float> grassRotations;
 
+    std::vector<VM::vec4> spots;
+
     GLuint grassVariance;    // Буфер для смещения координат травинок
     vector<VM::vec2> grassVarianceData; // Вектор со смещениями для координат травинок
     vector<VM::vec2> grassVelocity; // Вектор со смещениями для координат травинок
@@ -42,7 +44,7 @@ private:
     vector<VM::vec2> GenerateGrassPositions();
 
 public:
-    Grass();
+    Grass(std::vector<VM::vec4> spots);
     void UpdateGrassVariance();
     void Draw(const GL::Camera &camera) override;
     void Create() override;

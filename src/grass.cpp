@@ -3,13 +3,14 @@
 
 
 
-Grass::Grass()
+Grass::Grass(std::vector<VM::vec4> spots)
         : Mesh("grass"),
           grassVarianceData(GRASS_INSTANCES),
           grassVelocity(GRASS_INSTANCES),
           windPhase(0),
           prevTimestamp(0),
-          windDirection(0.3)
+          windDirection(0.3),
+          spots(spots)
 {}
 
 namespace VM {
@@ -138,10 +139,29 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
         float x = i % int(width);
         float y = i / int(width);
+
+
         x += k * (float(rand()) / RAND_MAX - .5f);
         y += k * (float(rand()) / RAND_MAX);
         x = x/width;
         y = y/width;
+
+        bool done = false;
+        while(!done) {
+            done = true;
+            for (auto spot: spots) {
+                if ((x - spot.x) * (x - spot.x) + (y - spot.z) * (y - spot.z) < spot.w * spot.w) {
+                    // point in spot
+                    done = false;
+                    x = float(rand()) / RAND_MAX;
+                    y = float(rand()) / RAND_MAX;
+                    break;
+                }
+            }
+        }
+
+
+
 
         grassPositions[i] = VM::vec2(x, y);
     }
@@ -181,21 +201,6 @@ void Grass::InitMeshAndUV()
 }
 
 
-template<typename T>
-void BindDataAndAttribute(GLuint buffer, vector<T> &data, GLuint location, int nValues, bool eachInstance)
-{
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);                                 CHECK_GL_ERRORS
-    glBufferData(GL_ARRAY_BUFFER, sizeof(data[0]) * data.size(),
-                 data.data(), GL_STATIC_DRAW);                            CHECK_GL_ERRORS
-
-
-    glEnableVertexAttribArray(location);                                   CHECK_GL_ERRORS
-    glVertexAttribPointer(location, nValues, GL_FLOAT, GL_FALSE, 0, 0);          CHECK_GL_ERRORS
-    if(eachInstance){
-        // Здесь мы указываем, что нужно брать новое значение из этого буфера для каждого инстанса (для каждой травинки)
-        glVertexAttribDivisor(location, 1);                                       CHECK_GL_ERRORS
-    }
-}
 
 
 // Создание травы

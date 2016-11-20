@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <GL/Mesh.h>
+#include <object.h>
 #include <scene.h>
 
 #include "Utility.h"
@@ -44,11 +44,28 @@ int main(int argc, char **argv)
         scene->AddMesh(ground);
         cout << "Ground created" << endl;
 
-        grass = new Grass();
+        vector<VM::vec3> rocks = {
+                VM::vec3(.6, 0, .7),
+                VM::vec3(.2, 0, .3),
+                VM::vec3(.8, 0, .2)
+        };
+        vector<float> scales = {0.07, 0.02, 0.04};
+        vector<VM::vec4> spots;
+
+
+        for(int i = 0; i < rocks.size(); ++i){
+            Object *rock = new Object("rock", "Texture/rock.jpg", rocks[i], scales[i]);
+            scene->AddMesh(rock);
+
+            auto v = rocks[i];
+            auto radius = scales[i] * 2;
+            spots.push_back(VM::vec4(v, radius));
+        }
+
+        grass = new Grass(spots);
         scene->AddMesh(grass);
         cout << "Grass created" << endl;
 
-        //GL::Mesh rock("cube");
 
         glutMainLoop();
 
