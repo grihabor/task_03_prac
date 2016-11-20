@@ -193,7 +193,7 @@ void Grass::InitMeshAndUV()
     }
 
     texture = GL::LoadTexture(FILENAME_TEXTURE_GRASS, GL_CLAMP_TO_BORDER, GL_LINEAR);
-    nTriangles = GL::LoadCoords("Texture/grass.uv", texture, grassPoints, uvPoints, faces);
+    nTriangles = GL::LoadCoords("mesh/grass.uv", texture, grassPoints, uvPoints, faces);
     std::cout << "grass: nTriangles = " << nTriangles << std::endl;
     for(int i = 1; i <= nTriangles; ++i){
         indices.push_back(i);
