@@ -30,6 +30,8 @@ namespace GL
                 // Здесь мы указываем, что нужно брать новое значение из этого буфера для каждого инстанса (для каждой травинки)
                 glVertexAttribDivisor(location, 1);                                       CHECK_GL_ERRORS
             }
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
 
     private:

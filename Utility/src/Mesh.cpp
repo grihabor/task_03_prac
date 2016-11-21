@@ -6,10 +6,10 @@
 
 GL::Mesh::Mesh(std::string filename)
 {
-    CreateVAO();
     if(filename != "")
         shader = GL::CompileShaderProgram(filename);
         std::cout << "Mesh: shader \'" + filename + "\' loaded!" << std::endl;
+    CreateVAO();
 }
 
 GL::Mesh::~Mesh()

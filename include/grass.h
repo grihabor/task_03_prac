@@ -12,7 +12,7 @@ using std::vector;
 class Grass : public GL::Mesh
 {
 private:
-    const uint GRASS_INSTANCES = 100 * 100; // Количество травинок
+    const uint GRASS_INSTANCES = 10000; // Количество травинок
     const char *FILENAME_TEXTURE_GRASS = "Texture/grass_1.png";
 
     GLuint indexBuffer;
@@ -38,7 +38,6 @@ private:
     vector<VM::vec2> grassVelocity; // Вектор со смещениями для координат травинок
 
 private:
-    void CreateVAO();
     void InitMeshAndUV();
     vector<float> GenerateGrassRotations();
     vector<VM::vec2> GenerateGrassPositions();

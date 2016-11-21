@@ -40,9 +40,6 @@ int main(int argc, char **argv)
         cout << "Start" << endl;
         auto scene = Scene::GetScene(argc, argv, KeyboardEvents);
 
-        Ground *ground = new Ground();
-        scene->AddMesh(ground);
-        cout << "Ground created" << endl;
 
         vector<VM::vec3> rocks = {
                 VM::vec3(.6, 0, .7),
@@ -53,10 +50,8 @@ int main(int argc, char **argv)
         vector<VM::vec4> spots;
 
 
-        for(int i = 0; i < rocks.size(); ++i){
-            Object *rock = new Object("rock", "Texture/rock.jpg", rocks[i], scales[i]);
-            scene->AddMesh(rock);
 
+        for(int i = 0; i < rocks.size(); ++i) {
             auto v = rocks[i];
             auto radius = scales[i] * 2;
             spots.push_back(VM::vec4(v, radius));
@@ -66,6 +61,16 @@ int main(int argc, char **argv)
         scene->AddMesh(grass);
         cout << "Grass created" << endl;
 
+        Ground *ground = new Ground();
+        scene->AddMesh(ground);
+        cout << "Ground created" << endl;
+
+
+        for(int i = 0; i < rocks.size(); ++i) {
+            Object *rock = new Object("rock", "Texture/rock.jpg", rocks[i], scales[i]);
+            scene->AddMesh(rock);
+            cout << "Rock " << i << " created" << endl;
+        }
 
         glutMainLoop();
 

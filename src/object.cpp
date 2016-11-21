@@ -70,13 +70,12 @@ void Object::Create()
 {
 
     // VBO
-    GLuint buffers[3];
+    GLuint buffers[2];
     int bufCount = sizeof(buffers)/sizeof(buffers[0]);
     glGenBuffers(bufCount, buffers);                                              CHECK_GL_ERRORS
 
     GLuint meshBuffer = buffers[0];
-    GLuint uvBuffer = buffers[2];
-    indexBuffer = buffers[1];
+    GLuint uvBuffer = buffers[1];
 
     GLuint pointsLocation = glGetAttribLocation(shader, "point");           CHECK_GL_ERRORS
     GLuint uvpointLocation = glGetAttribLocation(shader, "uvpoint");        CHECK_GL_ERRORS
@@ -94,6 +93,11 @@ void Object::Create()
 
     // uv points
     BindDataAndAttribute(uvBuffer, uvs, uvpointLocation, 2, false);
+
+    // Отвязываем VAO
+    glBindVertexArray(0);                                                        CHECK_GL_ERRORS
+    // Отвязываем буфер
+    glBindBuffer(GL_ARRAY_BUFFER, 0);                                            CHECK_GL_ERRORS
 }
 
 

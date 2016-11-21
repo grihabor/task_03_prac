@@ -146,6 +146,7 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
         x = x/width;
         y = y/width;
 
+
         bool done = false;
         while(!done) {
             done = true;
