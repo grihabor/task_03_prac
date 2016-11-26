@@ -46,12 +46,17 @@ void main()
     UV = uvpoint;
     color_coef = 0.3*float(gl_InstanceID % 17)/16 + 0.7;
     point_y = point.y;
-    float size_variance = 1. + 0.1*(float(gl_InstanceID % 19)/18 - .5);
+
+    float size_variance = 1. + 0.3*(float(gl_InstanceID % 19)/18 - .5);
+    mat4 sizeMatrix = mat4(1.0);
+    sizeMatrix[0][0] = size_variance;
+    sizeMatrix[1][1] = size_variance;
+    sizeMatrix[2][2] = size_variance;
 
     mat4 scaleMatrix = mat4(1.0);
-    scaleMatrix[0][0] = scale*size_variance;
-    scaleMatrix[1][1] = scale*size_variance;
-    scaleMatrix[2][2] = scale*size_variance;
+    scaleMatrix[0][0] = scale;
+    scaleMatrix[1][1] = scale;
+    scaleMatrix[2][2] = scale;
     mat4 positionMatrix = mat4(1.0);
     positionMatrix[3][0] = position.x;
     positionMatrix[3][2] = position.y;
@@ -68,5 +73,5 @@ void main()
         - sin(phi) * variance.x + cos(phi) * variance.y
     );
 
-	gl_Position = camera * (positionMatrix * scaleMatrix * rotationMatrix * bend(point, var));
+	gl_Position = camera * (positionMatrix * scaleMatrix * rotationMatrix * bend(sizeMatrix*point, var));
 }

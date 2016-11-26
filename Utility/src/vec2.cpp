@@ -26,6 +26,10 @@ const float& vec2::operator[](const uint index) const {
     return y;
 }
 
+vec2 abs(const vec2 &v)
+{
+    return vec2(std::abs(v.x), std::abs(v.y));
+}
 vec2 vec2::operator-(const vec2 &v) const {
     return vec2(x - v.x, y - v.y);
 }

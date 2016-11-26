@@ -7,24 +7,10 @@ Grass::Grass(std::vector<VM::vec4> spots)
         : Mesh("grass"),
           grassVarianceData(GRASS_INSTANCES),
           grassVelocity(GRASS_INSTANCES),
-          windPhase(0),
           prevTimestamp(0),
-          windDirection(0.3),
-          spots(spots)
+          spots(spots),
+          wind()
 {}
-
-namespace VM {
-    vec2 operator*(float a, vec2 v){
-        return vec2(a, a)*v;
-    }
-    vec2 operator-(vec2 v, float a){
-        return v-vec2(a, a);
-    }
-    vec2 abs(vec2 v){
-        return vec2(std::abs(v.x), std::abs(v.y));
-    }
-}
-
 
 // Обновление смещения травинок
 void Grass::UpdateGrassVariance() {
@@ -37,45 +23,31 @@ void Grass::UpdateGrassVariance() {
         deltaTime = 0;
     prevTimestamp = timeSinceStart;
 
-    //deltaTime = 1;
+    if(windFlag) {
+        wind.Update(deltaTime);
+    }
 
-    //std::cout << deltaTime << std::endl;
-
-    float windMagnitude;//0.1 + 0.2*(float(rand()) / RAND_MAX - .5f);
-    float balancePoint = 0.1;
+    // grass characteristics
     float k = .1;
     float mass = 1e4;
     float friction = 15;
-
-    if(windFlag) {
-        windPhase += 1e-3 * deltaTime;
-        windDirection += 1e-4 * deltaTime;
-    }
-    float windFrequency = 4;
+    float balancePoint = 0.1;
 
     for (uint i = 0; i < GRASS_INSTANCES; ++i) {
 
-        VM::vec2 newVariance = grassVarianceData[i] + deltaTime * grassVelocity[i];
+        VM::vec2 newVariance = grassVarianceData[i] + grassVelocity[i] * deltaTime;
 
         VM::vec2 windForce(0.f);
-        if(windFlag) {
-            float t = cos(windDirection) * grassPositions[i].x -
-                      sin(windDirection) * grassPositions[i].y;
-
-            windMagnitude = std::sin(windFrequency * 1.57 * t + windPhase);
-            windMagnitude *= 0.1 * windMagnitude;
-            windForce = windMagnitude * VM::vec2(sin(windDirection), cos(windDirection));
-        }
+        if(windFlag)
+            windForce = wind.GetForce(grassPositions[i]);
 
 
+        VM::vec2 hookForce = (grassVarianceData[i] - VM::vec2(balancePoint)) * (-k)
+                             * abs(grassVarianceData[i] - VM::vec2(balancePoint));
+        VM::vec2 frictionForce = grassVelocity[i] * (- friction);
 
 
-        VM::vec2 hookForce = -k * (grassVarianceData[i] - balancePoint)
-                             * abs(grassVarianceData[i] - balancePoint);
-        VM::vec2 frictionForce = - friction * grassVelocity[i];
-
-
-        grassVelocity[i] += deltaTime * (hookForce + windForce + frictionForce) / mass;
+        grassVelocity[i] += (hookForce + windForce + frictionForce) * deltaTime / mass;
 
         grassVarianceData[i] = newVariance;
     }

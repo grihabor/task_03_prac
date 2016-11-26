@@ -5,6 +5,7 @@
 #include <vector>
 #include "Mesh.h"
 #include "Texture.h"
+#include "wind.h"
 
 using std::vector;
 
@@ -20,8 +21,7 @@ private:
     GL::Texture texture;
 
     bool windFlag = true;
-    float windPhase;
-    float windDirection;
+    Wind wind;
     int prevTimestamp;
 
     vector<VM::vec4> grassPoints;

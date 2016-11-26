@@ -30,7 +30,7 @@ set(SOURCE_FILES
         src/object.cpp
         src/grass.cpp
         src/ground.cpp
-        src/skybox.cpp)
+        src/skybox.cpp include/wind.h src/wind.cpp)
 
 
 

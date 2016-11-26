@@ -46,5 +46,6 @@ float length(const vec2 &v);
 
 float dot(const vec2 &v, const vec2 &w);
 
+    vec2 abs(const vec2 &v);
 }
 #endif // VEC2_H
