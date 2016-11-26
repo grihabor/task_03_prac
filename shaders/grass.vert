@@ -17,6 +17,7 @@ uniform mat4 camera;
 
 out vec2 UV;
 out float color_coef;
+out float point_y;
 
 vec4 bend(vec4 p, vec2 var)
 {
@@ -44,6 +45,7 @@ void main()
 
     UV = uvpoint;
     color_coef = 0.3*float(gl_InstanceID % 17)/16 + 0.7;
+    point_y = point.y;
     float size_variance = 1. + 0.1*(float(gl_InstanceID % 19)/18 - .5);
 
     mat4 scaleMatrix = mat4(1.0);

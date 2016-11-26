@@ -2,6 +2,7 @@
 
 in vec2 UV;
 in float color_coef;
+in float point_y;
 
 uniform sampler2D textureSampler;
 
@@ -11,7 +12,7 @@ void main() {
     outColor = texture(textureSampler, UV).rgba;
     if(outColor.a < 1.)
         discard;
-
-    outColor *= color_coef;
+    float t = (point_y * 0.4 + 0.6);
+    outColor *= color_coef * t*t;
     outColor[3] = 1.;
 }
