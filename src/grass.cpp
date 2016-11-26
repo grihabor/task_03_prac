@@ -141,8 +141,8 @@ vector<VM::vec2> Grass::GenerateGrassPositions() {
         float y = i / int(width);
 
 
-        x += k * (float(rand()) / RAND_MAX - .5f);
-        y += k * (float(rand()) / RAND_MAX);
+        x += k * (float(rand()) / RAND_MAX + 0.4);
+        y += k * (float(rand()) / RAND_MAX + 0.4);
         x = x/width;
         y = y/width;
 
