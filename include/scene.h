@@ -4,7 +4,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "GL.h"
-#include <vector>
+#include <deque>
 #include <memory>
 
 class Scene
@@ -24,7 +24,7 @@ private:
     bool captureMouse = true;
 
     // scene objects to render
-    std::vector<std::shared_ptr<GL::Mesh>> meshes;
+    std::deque<std::shared_ptr<GL::Mesh>> meshes;
 
     bool (*userKeyboardEvents)(GL::Camera &camera, unsigned char key);
 
@@ -33,7 +33,7 @@ public:
     static std::shared_ptr<Scene> GetScene(int argc, char **argv,
                                            bool (*customKeyboardEvents)(GL::Camera &camera, unsigned char key));
 
-    void AddMesh(GL::Mesh *mesh);
+    void AddMesh(GL::Mesh *mesh, bool front = false);
 
     // Инициализация окна
     void InitializeGLUT(int argc, char **argv);

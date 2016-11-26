@@ -29,7 +29,8 @@ set(SOURCE_FILES
         src/scene.cpp
         src/object.cpp
         src/grass.cpp
-        src/ground.cpp)
+        src/ground.cpp
+        src/skybox.cpp)
 
 
 

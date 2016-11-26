@@ -1,12 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <object.h>
-#include <scene.h>
 
 #include "Utility.h"
+#include "object.h"
+#include "scene.h"
 #include "grass.h"
 #include "ground.h"
+#include "skybox.h"
 
 
 
@@ -40,7 +41,6 @@ int main(int argc, char **argv)
         cout << "Start" << endl;
         auto scene = Scene::GetScene(argc, argv, KeyboardEvents);
 
-
         vector<VM::vec3> rocks = {
                 VM::vec3(.6, 0, .7),
                 VM::vec3(.2, 0, .3),
@@ -65,6 +65,9 @@ int main(int argc, char **argv)
         scene->AddMesh(ground);
         cout << "Ground created" << endl;
 
+
+        Skybox *skybox = new Skybox();
+        scene->AddMesh(skybox, true);
 
         for(int i = 0; i < rocks.size(); ++i) {
             Object *rock = new Object("rock", "Texture/rock.jpg", rocks[i], scales[i]);

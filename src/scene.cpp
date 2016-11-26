@@ -29,9 +29,13 @@ Scene::Scene(int argc, char **argv, bool (*customKeyboardEvents)(GL::Camera &cam
 
 
 
-void Scene::AddMesh(GL::Mesh *mesh) {
+void Scene::AddMesh(GL::Mesh *mesh, bool front) {
     mesh->Create();
-    meshes.push_back(std::shared_ptr<GL::Mesh>(mesh));
+    auto p = std::shared_ptr<GL::Mesh>(mesh);
+    if(front)
+        meshes.push_front(p);
+    else
+        meshes.push_back(p);
 }
 
 void Scene::RenderLayouts() {
