@@ -8,5 +8,5 @@ out vec4 outColor;
 
 void main() {
     vec3 color = texture(textureSampler, UV).rgb;
-    outColor = vec4(color.r * 1.1, color.g * 1.1, color.b * .7, 1.);
+    outColor = vec4(color.r * .7, color.g * .7, color.b * .4, 1.);
 }
