@@ -69,8 +69,13 @@ int main(int argc, char **argv)
         Skybox *skybox = new Skybox();
         scene->AddMesh(skybox, true);
 
+        Object *tree = new Object("tree", "Texture/tree.jpg", VM::vec3(0, 0, 0),
+                                  0.05);
+        scene->AddMesh(tree);
+
         for(int i = 0; i < rocks.size(); ++i) {
-            Object *rock = new Object("rock", "Texture/rock.jpg", rocks[i], scales[i]);
+            Object *rock = new Object("rock", "Texture/rock.jpg",
+                                      rocks[i], scales[i]);
             scene->AddMesh(rock);
             cout << "Rock " << i << " created" << endl;
         }

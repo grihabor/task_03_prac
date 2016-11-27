@@ -119,7 +119,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 Object::Object(std::string filename, std::string texture_path, VM::vec3 pos, float scale)
     : Mesh(filename), position(pos), scale(scale)
 {
-    texture = GL::LoadTexture(texture_path.c_str(), GL_CLAMP_TO_BORDER, GL_LINEAR);
+    texture = GL::LoadTexture(texture_path.c_str(), GL_REPEAT, GL_LINEAR);
 
     filename = std::string("mesh/") + filename + ".obj";
     std::ifstream file(filename);
