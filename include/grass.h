@@ -48,6 +48,10 @@ public:
     void Draw(const GL::Camera &camera) override;
     void Create() override;
     void WindSwitch(){windFlag = !windFlag;}
+
+    void SetWindDirection(float direction){wind.windDirection = direction;}
+    float GetWindDirection(){return wind.windDirection;}
+
 };
 
 #endif //TASK_03_GRASS_H

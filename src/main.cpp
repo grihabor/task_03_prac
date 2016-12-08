@@ -8,13 +8,16 @@
 #include "grass.h"
 #include "ground.h"
 #include "skybox.h"
-
+#include "serializer.h"
 
 
 using namespace std;
 
 GL::Camera camera;
 Grass *grass;
+
+const char* JSON_FILENAME = "save.json";
+const char* BINARY_FILENAME = "save.bin";
 
 bool KeyboardEvents(GL::Camera &camera, unsigned char key) {
     if (key == 27) {
@@ -29,6 +32,21 @@ bool KeyboardEvents(GL::Camera &camera, unsigned char key) {
         camera.goRight();
     } else if (key == 'i') {
         grass->WindSwitch();
+    } else if (key == 'v') {
+        JSONSerializerReader reader(JSON_FILENAME);
+        reader.Open();
+        float t;
+        reader.process(t);
+        grass->SetWindDirection(t);
+    } else if (key == 'b') {
+        JSONSerializerWriter writer(JSON_FILENAME);
+        writer.Open();
+        float t = grass->GetWindDirection();
+        writer.process(t);
+    } else if (key == 'n') {
+
+    } else if (key == 'm') {
+
     }
     return true;
 }
