@@ -22,7 +22,23 @@ void Grass::SerializeState(BaseSerializer *serializer, bool dataChanges){
 
     if(dataChanges){
         BindDataAndAttribute(positionBuffer, grassPositions, -1, 2, true);
+
+        // load rotations from file
+        std::vector<VM::vec2> temp_rotations;
+        serializer->process(temp_rotations);
+        grassRotations.clear();
+        for(auto t : temp_rotations){
+            grassRotations.push_back(t.x);
+        }
         BindDataAndAttribute(rotationBuffer, grassRotations, -1, 1, true);
+    } else {
+
+        // save rotations to file
+        std::vector<VM::vec2> temp_rotations;
+        for(auto t : grassRotations){
+            temp_rotations.push_back(VM::vec2(t, t));
+        }
+        serializer->process(temp_rotations);
     }
 }
 
