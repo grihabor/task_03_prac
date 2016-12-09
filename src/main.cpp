@@ -34,16 +34,20 @@ bool KeyboardEvents(GL::Camera &camera, unsigned char key) {
         grass->WindSwitch();
     } else if (key == 'c') {
         JSONSerializerReader reader(JSON_FILENAME);
-        grass->SerializeState(&reader, true);
+        if(reader.IsOpen())
+            grass->SerializeState(&reader, true);
     } else if (key == 'v') {
         JSONSerializerWriter writer(JSON_FILENAME);
-        grass->SerializeState(&writer, false);
+        if(writer.IsOpen())
+            grass->SerializeState(&writer, false);
     } else if (key == 'b') {
         BinarySerializerReader reader(BINARY_FILENAME);
-        grass->SerializeState(&reader, true);
+        if(reader.IsOpen())
+            grass->SerializeState(&reader, true);
     } else if (key == 'n') {
         BinarySerializerWriter writer(BINARY_FILENAME);
-        grass->SerializeState(&writer, false);
+        if(writer.IsOpen())
+            grass->SerializeState(&writer, false);
     }
     return true;
 }

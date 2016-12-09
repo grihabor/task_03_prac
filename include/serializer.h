@@ -29,6 +29,11 @@ public:
             std::cout << "Failed to open: " << filename << std::endl;
         }
     }
+    virtual bool IsOpen()
+    {
+        return file_stream.is_open();
+    }
+
     virtual bool Close()
     {
         if(file_stream.is_open()){
