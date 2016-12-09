@@ -32,21 +32,18 @@ bool KeyboardEvents(GL::Camera &camera, unsigned char key) {
         camera.goRight();
     } else if (key == 'i') {
         grass->WindSwitch();
-    } else if (key == 'v') {
+    } else if (key == 'c') {
         JSONSerializerReader reader(JSON_FILENAME);
-        reader.Open();
-        float t;
-        reader.process(t);
-        grass->SetWindDirection(t);
-    } else if (key == 'b') {
+        grass->SerializeState(&reader, true);
+    } else if (key == 'v') {
         JSONSerializerWriter writer(JSON_FILENAME);
-        writer.Open();
-        float t = grass->GetWindDirection();
-        writer.process(t);
+        grass->SerializeState(&writer, false);
+    } else if (key == 'b') {
+        BinarySerializerReader reader(BINARY_FILENAME);
+        grass->SerializeState(&reader, true);
     } else if (key == 'n') {
-
-    } else if (key == 'm') {
-
+        BinarySerializerWriter writer(BINARY_FILENAME);
+        grass->SerializeState(&writer, false);
     }
     return true;
 }
@@ -54,6 +51,7 @@ bool KeyboardEvents(GL::Camera &camera, unsigned char key) {
 int main(int argc, char **argv)
 {
     putenv("MESA_GL_VERSION_OVERRIDE=3.3COMPAT");
+    srand(time(NULL));
 
     try {
         cout << "Start" << endl;

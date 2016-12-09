@@ -19,7 +19,7 @@ public:
     virtual ~BaseSerializer()
     {Close();}
 
-    virtual bool Open(bool in = true)
+    virtual bool Open()
     {
         Close();
         file_stream.open(filename, open_mode);
@@ -29,7 +29,7 @@ public:
             std::cout << "Failed to open: " << filename << std::endl;
         }
     }
-    virtual bool Close(bool in = true)
+    virtual bool Close()
     {
         if(file_stream.is_open()){
             file_stream.close();

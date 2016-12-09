@@ -23,12 +23,16 @@ namespace GL
             glBufferData(GL_ARRAY_BUFFER, sizeof(data[0]) * data.size(),
                          data.data(), GL_STATIC_DRAW);                            CHECK_GL_ERRORS
 
-
-            glEnableVertexAttribArray(location);                                   CHECK_GL_ERRORS
-            glVertexAttribPointer(location, nValues, GL_FLOAT, GL_FALSE, 0, 0);          CHECK_GL_ERRORS
-            if(eachInstance){
-                // Здесь мы указываем, что нужно брать новое значение из этого буфера для каждого инстанса (для каждой травинки)
-                glVertexAttribDivisor(location, 1);                                       CHECK_GL_ERRORS
+            if(location != -1) {
+                glEnableVertexAttribArray(location);
+                CHECK_GL_ERRORS
+                glVertexAttribPointer(location, nValues, GL_FLOAT, GL_FALSE, 0, 0);
+                CHECK_GL_ERRORS
+                if (eachInstance) {
+                    // Здесь мы указываем, что нужно брать новое значение из этого буфера для каждого инстанса (для каждой травинки)
+                    glVertexAttribDivisor(location, 1);
+                    CHECK_GL_ERRORS
+                }
             }
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "wind.h"
+#include "serializer.h"
 
 using std::vector;
 
@@ -33,9 +34,11 @@ private:
 
     std::vector<VM::vec4> spots;
 
-    GLuint grassVariance;    // Буфер для смещения координат травинок
-    vector<VM::vec2> grassVarianceData; // Вектор со смещениями для координат травинок
-    vector<VM::vec2> grassVelocity; // Вектор со смещениями для координат травинок
+    GLuint grassVariance;     // Буфер для смещения координат травинок
+    GLuint positionBuffer;    // Буфер для абсолютных координат травинок
+    GLuint rotationBuffer;    // Буфер для поворота травинок
+    vector<VM::vec2> grassVarianceData;
+    vector<VM::vec2> grassVelocity;
 
 private:
     void InitMeshAndUV();
@@ -49,8 +52,7 @@ public:
     void Create() override;
     void WindSwitch(){windFlag = !windFlag;}
 
-    void SetWindDirection(float direction){wind.windDirection = direction;}
-    float GetWindDirection(){return wind.windDirection;}
+    void SerializeState(BaseSerializer *serializer, bool dataChanges);
 
 };
 

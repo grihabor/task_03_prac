@@ -12,6 +12,21 @@ Grass::Grass(std::vector<VM::vec4> spots)
           wind()
 {}
 
+
+void Grass::SerializeState(BaseSerializer *serializer, bool dataChanges){
+    serializer->process(wind.windPhase);
+    serializer->process(wind.windDirection);
+    serializer->process(this->grassPositions);
+    serializer->process(this->grassVarianceData);
+    serializer->process(this->grassVelocity);
+
+    if(dataChanges){
+        BindDataAndAttribute(positionBuffer, grassPositions, -1, 2, true);
+        BindDataAndAttribute(rotationBuffer, grassRotations, -1, 1, true);
+    }
+}
+
+
 // Обновление смещения травинок
 void Grass::UpdateGrassVariance() {
 
@@ -52,13 +67,7 @@ void Grass::UpdateGrassVariance() {
         grassVarianceData[i] = newVariance;
     }
 
-    // Привязываем буфер, содержащий смещения
-    glBindBuffer(GL_ARRAY_BUFFER, grassVariance);                                CHECK_GL_ERRORS
-    // Загружаем данные в видеопамять
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VM::vec4) * GRASS_INSTANCES,
-                 grassVarianceData.data(), GL_STATIC_DRAW);                      CHECK_GL_ERRORS
-    // Отвязываем буфер
-    glBindBuffer(GL_ARRAY_BUFFER, 0);                                            CHECK_GL_ERRORS
+    BindDataAndAttribute(grassVariance, grassVarianceData, -1, 2, true);
 }
 
 // Рисование травы
@@ -186,7 +195,7 @@ void Grass::Create() {
     glGenBuffers(bufCount, buffers);                                              CHECK_GL_ERRORS
 
     GLuint pointsBuffer = buffers[0];
-    GLuint positionBuffer = buffers[1];
+    positionBuffer = buffers[1];
     GLuint rotationBuffer = buffers[5];
     grassVariance = buffers[2];
     GLuint uvBuffer = buffers[3];
